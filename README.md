@@ -9,6 +9,8 @@
 ![Supabase](https://img.shields.io/badge/Database-Supabase%20PostgreSQL-3ECF8E)
 ![Status](https://img.shields.io/badge/Status-Cloud--enabled%20Prototype-orange)
 
+**🔗 Live:** [Teacher Dashboard](https://pacbas-backend.onrender.com/) · [Health Check](https://pacbas-backend.onrender.com/health) · [API Base URL](https://pacbas-backend.onrender.com)
+
 ---
 
 ## Table of Contents
@@ -413,14 +415,14 @@ Example beacon row:
 
 | Method | Endpoint | Description |
 |---|---|---|
-| `GET` | `/health` | Service and database availability |
-| `GET` | `/api/health` | Alias of the above |
+| `GET` | [`/health`](https://pacbas-backend.onrender.com/health) | Service and database availability |
+| `GET` | [`/api/health`](https://pacbas-backend.onrender.com/api/health) | Alias of the above |
 
 ---
 
 ## 9. Teacher Dashboard
 
-Served by the backend at the Render URL. Provides:
+Served by the backend and available at **[https://pacbas-backend.onrender.com](https://pacbas-backend.onrender.com/)**. Provides:
 
 - Classroom selection
 - Start / end attendance
@@ -483,7 +485,7 @@ npm start
 | Environment | Backend URL |
 |---|---|
 | Development | `http://192.168.x.x:3000` |
-| Production | `https://<your-service>.onrender.com` |
+| Production | [`https://pacbas-backend.onrender.com`](https://pacbas-backend.onrender.com) |
 
 Make the backend URL configurable instead of hardcoding a LAN address into the APK.
 
