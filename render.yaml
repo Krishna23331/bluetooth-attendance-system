@@ -1,0 +1,27 @@
+# ==============================================================================
+# Render.com Blueprint Specification (Infrastructure as Code)
+# ==============================================================================
+# Docs: https://render.com/docs/blueprint-spec
+# Free Web Service tier configuration for PACBAS Attendance Backend
+# ==============================================================================
+
+services:
+  - type: web
+    name: pacbas-backend
+    runtime: node
+    plan: free
+    region: oregon
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: node server.js
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false # Set in Render Dashboard: Supabase Postgres Connection String URI
+      - key: SUPABASE_URL
+        sync: false # Set in Render Dashboard: https://<project-ref>.supabase.co
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false # Set in Render Dashboard: Supabase service_role secret key

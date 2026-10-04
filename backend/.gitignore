@@ -1,0 +1,28 @@
+# Dependency directories
+node_modules/
+
+# Environment files - NEVER commit real credentials
+.env
+.env.local
+.env.production
+.env.staging
+!.env.example
+
+# Local SQLite databases (migrated to cloud Supabase)
+*.db
+*.db-shm
+*.db-wal
+pacbas.db
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# System and editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

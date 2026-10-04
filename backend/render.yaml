@@ -1,0 +1,23 @@
+# ==============================================================================
+# Render.com Blueprint Specification (For standalone backend repo deployment)
+# ==============================================================================
+
+services:
+  - type: web
+    name: pacbas-backend
+    runtime: node
+    plan: free
+    region: oregon
+    buildCommand: npm install
+    startCommand: node server.js
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false

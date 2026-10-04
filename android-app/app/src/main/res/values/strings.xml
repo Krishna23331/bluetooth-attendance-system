@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">PACBAS</string>
+    <string name="app_title">PACBAS Proximity</string>
+    <string name="app_subtitle">Smart Attendance System</string>
+    <string name="student_id_label">Student Identifier</string>
+    <string name="student_id_hint">e.g. STU-2026-0042</string>
+    <string name="start_scan">Start Radar</string>
+    <string name="stop_scan">Stop</string>
+    <string name="check_in">Check In</string>
+    <string name="checking_in">Submitting…</string>
+    <string name="scanning_status_idle">Radar idle • Tap to search</string>
+    <string name="scanning_status_active">Scanning 2.4GHz BLE channels…</string>
+    <string name="empty_title">No beacons in proximity</string>
+    <string name="empty_subtitle">Power on your ESP32 classroom beacon and tap Start Radar to connect.</string>
+    <string name="server_config_title">Backend Server Address</string>
+    <string name="server_config_hint">http://192.168.1.42:3000</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="status_in_range">IN RANGE</string>
+    <string name="status_out_of_range">OUT OF RANGE</string>
+    <string name="distance_format">%.1f m</string>
+    <string name="rssi_format">%d dBm</string>
+    <string name="server_connected">Connected to %s</string>
+</resources>

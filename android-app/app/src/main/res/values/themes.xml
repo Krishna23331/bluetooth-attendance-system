@@ -1,0 +1,41 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Theme.Pacbas" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Primary branding -->
+        <item name="colorPrimary">@color/pacbas_primary</item>
+        <item name="colorPrimaryVariant">@color/pacbas_primary_variant</item>
+        <item name="colorOnPrimary">@color/pacbas_white</item>
+
+        <!-- Secondary branding -->
+        <item name="colorSecondary">@color/pacbas_accent</item>
+        <item name="colorSecondaryVariant">@color/pacbas_accent_dark</item>
+        <item name="colorOnSecondary">@color/pacbas_white</item>
+
+        <!-- Background & Surface -->
+        <item name="android:windowBackground">@color/pacbas_background</item>
+        <item name="colorSurface">@color/pacbas_surface</item>
+        <item name="colorOnSurface">@color/pacbas_text_primary</item>
+
+        <!-- Status bar -->
+        <item name="android:statusBarColor">@color/pacbas_background</item>
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
+
+    <!-- Modern Card Style -->
+    <style name="Widget.Pacbas.Card" parent="Widget.MaterialComponents.CardView">
+        <item name="cardCornerRadius">16dp</item>
+        <item name="cardElevation">2dp</item>
+        <item name="cardBackgroundColor">@color/pacbas_surface</item>
+        <item name="strokeColor">@color/pacbas_card_stroke</item>
+        <item name="strokeWidth">1dp</item>
+    </style>
+
+    <!-- Pill Chip Style -->
+    <style name="Widget.Pacbas.PillBadge" parent="">
+        <item name="android:paddingStart">10dp</item>
+        <item name="android:paddingEnd">10dp</item>
+        <item name="android:paddingTop">4dp</item>
+        <item name="android:paddingBottom">4dp</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+</resources>

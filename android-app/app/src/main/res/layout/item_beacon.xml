@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="12dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="2dp"
+    app:strokeColor="@color/pacbas_card_stroke"
+    app:strokeWidth="1dp"
+    app:cardBackgroundColor="@color/pacbas_surface">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Header: Beacon Identity & Status Pill -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_alignParentStart="true"
+                android:layout_toStartOf="@id/textStatusBadge">
+
+                <!-- Beacon Icon Badge Container -->
+                <FrameLayout
+                    android:layout_width="38dp"
+                    android:layout_height="38dp"
+                    android:background="@drawable/bg_chip_neutral"
+                    android:layout_marginEnd="10dp">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_beacon"
+                        app:tint="@color/pacbas_primary" />
+                </FrameLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/textBeaconTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Room Beacon"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/pacbas_text_primary" />
+
+                    <TextView
+                        android:id="@+id/textMajorMinor"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Major 101 • Minor 1"
+                        android:textSize="12sp"
+                        android:textColor="@color/pacbas_text_secondary" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Status Badge (IN RANGE / OUT OF RANGE) -->
+            <TextView
+                android:id="@+id/textStatusBadge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:background="@drawable/bg_badge_in_range"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:text="@string/status_in_range"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.04"
+                android:textColor="@color/pacbas_in_range_text"
+                tools:text="IN RANGE" />
+        </RelativeLayout>
+
+        <!-- Metric Cards: Distance & Signal Bar -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@color/pacbas_surface_variant"
+            android:padding="12dp"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="12dp"
+            android:backgroundTint="@color/pacbas_surface_variant">
+
+            <!-- Distance Metric -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="EST. DISTANCE"
+                    android:textSize="10sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/pacbas_text_muted"
+                    android:letterSpacing="0.05" />
+
+                <TextView
+                    android:id="@+id/textDistance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="1.4 m"
+                    android:textSize="17sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/pacbas_text_primary" />
+            </LinearLayout>
+
+            <!-- Signal / RSSI Metric -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="end">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="SIGNAL (RSSI)"
+                    android:textSize="10sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/pacbas_text_muted"
+                    android:letterSpacing="0.05" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="2dp">
+
+                    <!-- Visual Signal Strength 4-Bar Meter -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="14dp"
+                        android:orientation="horizontal"
+                        android:gravity="bottom"
+                        android:layout_marginEnd="6dp">
+
+                        <View
+                            android:id="@+id/signalBar1"
+                            android:layout_width="3dp"
+                            android:layout_height="4dp"
+                            android:layout_marginEnd="2dp"
+                            android:background="@color/signal_strong" />
+
+                        <View
+                            android:id="@+id/signalBar2"
+                            android:layout_width="3dp"
+                            android:layout_height="7dp"
+                            android:layout_marginEnd="2dp"
+                            android:background="@color/signal_strong" />
+
+                        <View
+                            android:id="@+id/signalBar3"
+                            android:layout_width="3dp"
+                            android:layout_height="10dp"
+                            android:layout_marginEnd="2dp"
+                            android:background="@color/signal_strong" />
+
+                        <View
+                            android:id="@+id/signalBar4"
+                            android:layout_width="3dp"
+                            android:layout_height="14dp"
+                            android:background="@color/signal_strong" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/textRssi"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="-58 dBm"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/pacbas_text_primary" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- UUID & Check-In Action Row -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/textUuid"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_toStartOf="@id/buttonCheckIn"
+                android:layout_marginEnd="8dp"
+                android:text="UUID: 8ec76ea3…6f4d"
+                android:fontFamily="monospace"
+                android:textSize="11sp"
+                android:textColor="@color/pacbas_text_muted"
+                android:singleLine="true"
+                android:ellipsize="middle" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonCheckIn"
+                android:layout_width="wrap_content"
+                android:layout_height="44dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                app:cornerRadius="12dp"
+                android:text="@string/check_in"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:textAllCaps="false"
+                android:backgroundTint="@color/pacbas_primary" />
+        </RelativeLayout>
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

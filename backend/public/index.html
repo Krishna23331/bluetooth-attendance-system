@@ -1,0 +1,1263 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PACBAS — Real-Time Attendance & Radar Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #0B0F19;
+      --card-bg: rgba(17, 24, 39, 0.85);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --primary: #6366F1;
+      --primary-glow: rgba(99, 102, 241, 0.35);
+      --secondary: #06B6D4;
+      --success: #10B981;
+      --success-glow: rgba(16, 185, 129, 0.25);
+      --danger: #F43F5E;
+      --danger-glow: rgba(244, 63, 94, 0.25);
+      --warning: #F59E0B;
+      --text-main: #F8FAFC;
+      --text-muted: #94A3B8;
+      --radius-lg: 16px;
+      --radius-md: 12px;
+      --radius-sm: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      background-image:
+        radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(6, 182, 212, 0.12) 0px, transparent 50%);
+      background-attachment: fixed;
+      color: var(--text-main);
+      min-height: 100vh;
+      padding: 24px;
+      line-height: 1.5;
+    }
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    /* Top Navigation / Header */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 24px;
+      background: var(--card-bg);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      margin-bottom: 24px;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .logo-radar {
+      position: relative;
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 20px var(--primary-glow);
+    }
+
+    .logo-radar svg {
+      width: 24px;
+      height: 24px;
+      fill: #fff;
+    }
+
+    .brand-text h1 {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .badge-mvp {
+      font-size: 11px;
+      font-weight: 600;
+      background: rgba(99, 102, 241, 0.2);
+      color: #A5B4FC;
+      border: 1px solid rgba(99, 102, 241, 0.4);
+      padding: 2px 8px;
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .brand-text p {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .pulse-indicator {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.03);
+      padding: 6px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--card-border);
+    }
+
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: var(--success);
+      box-shadow: 0 0 10px var(--success);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(0.95);
+        opacity: 0.8;
+      }
+
+      50% {
+        transform: scale(1.3);
+        opacity: 1;
+        box-shadow: 0 0 15px var(--success);
+      }
+
+      100% {
+        transform: scale(0.95);
+        opacity: 0.8;
+      }
+    }
+
+    .btn-refresh {
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text-main);
+      border: 1px solid var(--card-border);
+      padding: 8px 16px;
+      border-radius: var(--radius-md);
+      font-weight: 500;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-refresh:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    /* KPI Grid */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .kpi-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .kpi-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .kpi-title {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+    }
+
+    .kpi-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .kpi-value {
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+
+    .kpi-subtext {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* Main Content Layout */
+    .dashboard-layout {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 24px;
+    }
+
+    @media (max-width: 992px) {
+      .dashboard-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Card Panels */
+    .panel {
+      background: var(--card-bg);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .panel-title {
+      font-size: 17px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Table Styles */
+    .table-container {
+      overflow-x: auto;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--card-border);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 13px;
+    }
+
+    th {
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text-muted);
+      padding: 12px 16px;
+      font-weight: 600;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    td {
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      color: var(--text-main);
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .student-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      color: #E2E8F0;
+      background: rgba(255, 255, 255, 0.06);
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .status-pill.present {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34D399;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .status-pill.rejected {
+      background: rgba(244, 63, 94, 0.15);
+      color: #FB7185;
+      border: 1px solid rgba(244, 63, 94, 0.3);
+    }
+
+    .signal-indicator-bar {
+      display: inline-flex;
+      align-items: flex-end;
+      gap: 2px;
+      height: 12px;
+      margin-right: 6px;
+      vertical-align: middle;
+    }
+
+    .signal-indicator-bar span {
+      width: 3px;
+      background: var(--text-muted);
+      border-radius: 1px;
+    }
+
+    .signal-indicator-bar span:nth-child(1) {
+      height: 4px;
+    }
+
+    .signal-indicator-bar span:nth-child(2) {
+      height: 7px;
+    }
+
+    .signal-indicator-bar span:nth-child(3) {
+      height: 10px;
+    }
+
+    .signal-indicator-bar span:nth-child(4) {
+      height: 12px;
+    }
+
+    .signal-strong span {
+      background: var(--success);
+    }
+
+    .signal-medium span:nth-child(1),
+    .signal-medium span:nth-child(2),
+    .signal-medium span:nth-child(3) {
+      background: var(--warning);
+    }
+
+    .signal-weak span:nth-child(1) {
+      background: var(--danger);
+    }
+
+    /* Simulator Form Controls */
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .form-input,
+    .form-select {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--card-border);
+      padding: 10px 14px;
+      border-radius: var(--radius-md);
+      color: var(--text-main);
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .form-input:focus,
+    .form-select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px var(--primary-glow);
+    }
+
+    .slider-container {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .slider-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+    }
+
+    input[type=range] {
+      accent-color: var(--primary);
+      cursor: pointer;
+    }
+
+    .btn-simulate {
+      width: 100%;
+      background: linear-gradient(135deg, var(--primary), #4338CA);
+      color: #fff;
+      border: none;
+      padding: 12px;
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      box-shadow: 0 4px 14px var(--primary-glow);
+      transition: all 0.2s;
+      margin-top: 8px;
+    }
+
+    .btn-simulate:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px var(--primary-glow);
+    }
+
+    .sim-feedback {
+      margin-top: 14px;
+      padding: 12px;
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      display: none;
+    }
+
+    .sim-feedback.success {
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: #34D399;
+      display: block;
+    }
+
+    .sim-feedback.rejected {
+      background: rgba(244, 63, 94, 0.1);
+      border: 1px solid rgba(244, 63, 94, 0.3);
+      color: #FB7185;
+      display: block;
+    }
+
+    .sim-feedback.conflict {
+      background: rgba(245, 158, 11, 0.1);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      color: #FBBF24;
+      display: block;
+    }
+
+    /* Teacher Session Controls Panel */
+    .session-panel {
+      background: var(--card-bg);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      border-radius: var(--radius-lg);
+      padding: 20px 24px;
+      margin-bottom: 24px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .session-panel::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary), var(--success));
+    }
+
+    .session-meta-group {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      min-width: 280px;
+    }
+
+    .session-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: rgba(99, 102, 241, 0.15);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      flex-shrink: 0;
+    }
+
+    .session-details h3 {
+      font-size: 16px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .session-details p {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .session-status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+    }
+
+    .session-status-badge.active {
+      background: rgba(16, 185, 129, 0.18);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      color: #34D399;
+      box-shadow: 0 0 14px rgba(16, 185, 129, 0.25);
+    }
+
+    .session-status-badge.closed {
+      background: rgba(148, 163, 184, 0.12);
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      color: #94A3B8;
+    }
+
+    .session-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .btn-session-start {
+      background: linear-gradient(135deg, #10B981, #059669);
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
+      transition: all 0.2s ease;
+    }
+
+    .btn-session-start:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(16, 185, 129, 0.45);
+    }
+
+    .btn-session-end {
+      background: linear-gradient(135deg, #EF4444, #B91C1C);
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 14px rgba(239, 68, 68, 0.3);
+      transition: all 0.2s ease;
+    }
+
+    .btn-session-end:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(239, 68, 68, 0.45);
+    }
+
+    .btn-session-start:disabled,
+    .btn-session-end:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .session-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 6px;
+      background: rgba(99, 102, 241, 0.15);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      color: #A5B4FC;
+    }
+
+    /* Beacons List Widget */
+    .beacon-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-md);
+      margin-bottom: 10px;
+    }
+
+    .beacon-info h4 {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .beacon-info p {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .beacon-params {
+      text-align: right;
+      font-size: 11px;
+      color: var(--secondary);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header>
+      <div class="brand-group">
+        <div class="logo-radar">
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm0-14c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm0 10c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" />
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h1>PACBAS Radar <span class="badge-mvp">Live Monitor</span></h1>
+          <p>Proximity-Based Continuous Attendance System • ESP32 BLE Gateway</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <div class="pulse-indicator">
+          <div class="pulse-dot"></div>
+          <span id="textBackendStatus">Connected to Backend</span>
+        </div>
+        <button id="btnManualRefresh" class="btn-refresh">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67" />
+          </svg>
+          Refresh
+        </button>
+      </div>
+    </header>
+
+    <!-- Teacher Session Controls Panel (Phase 3) -->
+    <div class="session-panel">
+      <div class="session-meta-group">
+        <div class="session-icon" id="sessionIcon">📡</div>
+        <div class="session-details">
+          <h3>
+            <span>Teacher Attendance Window</span>
+            <span id="badgeSessionStatus" class="session-status-badge closed">● Attendance Closed</span>
+          </h3>
+          <p id="textSessionSummary">No active class session. Student check-ins are currently blocked (409).</p>
+        </div>
+      </div>
+      <div class="session-actions">
+        <select id="selectSessionRoom" class="form-select"
+          style="width: auto; min-width: 170px; padding: 9px 12px; font-size: 13px;">
+          <option value="8ec76ea3-6668-48da-9866-75be8bc86f4d">Room 101-1</option>
+        </select>
+        <button id="btnStartSession" class="btn-session-start">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+          </svg>
+          Start Session
+        </button>
+        <button id="btnEndSession" class="btn-session-end" disabled>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+            <rect x="5" y="5" width="14" height="14" rx="2"></rect>
+          </svg>
+          End Session
+        </button>
+      </div>
+    </div>
+
+    <!-- KPI Metric Row -->
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-header">
+          <span class="kpi-title">Session State</span>
+          <div class="kpi-icon" id="kpiSessionIcon" style="background: rgba(148, 163, 184, 0.15); color: #94A3B8;">⚪
+          </div>
+        </div>
+        <div class="kpi-value" id="kpiSessionState" style="font-size: 26px; color: #94A3B8;">Closed</div>
+        <div class="kpi-subtext" id="kpiSessionSubtext">No session in progress</div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-header">
+          <span class="kpi-title">Total Records</span>
+          <div class="kpi-icon" style="background: rgba(99, 102, 241, 0.15); color: #818CF8;">📊</div>
+        </div>
+        <div class="kpi-value" id="kpiTotal">0</div>
+        <div class="kpi-subtext">All check-in attempts logged</div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-header">
+          <span class="kpi-title">Present & Verified</span>
+          <div class="kpi-icon" style="background: rgba(16, 185, 129, 0.15); color: #34D399;">✅</div>
+        </div>
+        <div class="kpi-value" id="kpiPresent" style="color: #34D399;">0</div>
+        <div class="kpi-subtext" id="kpiPresentRate">0% in-range rate</div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-header">
+          <span class="kpi-title">Rejected (Out of Range)</span>
+          <div class="kpi-icon" style="background: rgba(244, 63, 94, 0.15); color: #FB7185;">⛔</div>
+        </div>
+        <div class="kpi-value" id="kpiRejected" style="color: #FB7185;">0</div>
+        <div class="kpi-subtext">Below room cutoff threshold</div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-header">
+          <span class="kpi-title">Active Beacons</span>
+          <div class="kpi-icon" style="background: rgba(6, 182, 212, 0.15); color: #22D3EE;">📡</div>
+        </div>
+        <div class="kpi-value" id="kpiBeacons" style="color: #22D3EE;">1</div>
+        <div class="kpi-subtext">Provisioned classrooms</div>
+      </div>
+    </div>
+
+    <!-- Main Dashboard Split -->
+    <div class="dashboard-layout">
+      <!-- Left: Real-time Attendance Feed -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <span>⚡ Live Attendance Feed</span>
+          </div>
+          <input type="text" id="inputFilterStudent" class="form-input"
+            style="max-width: 220px; padding: 6px 12px; font-size: 12px;" placeholder="Filter by Student ID…">
+        </div>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Student ID</th>
+                <th>Room</th>
+                <th>Session</th>
+                <th>Signal (RSSI)</th>
+                <th>Est. Distance</th>
+                <th>Status</th>
+                <th>Timestamp</th>
+              </tr>
+            </thead>
+            <tbody id="tableAttendanceBody">
+              <tr>
+                <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 32px;">
+                  Listening for incoming BLE check-ins…
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Right: Simulator & Room Diagnostics -->
+      <div>
+        <!-- Check-in Simulator Panel -->
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">
+              <span>🎯 Proximity Simulator</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="simStudentId">Student Identifier</label>
+            <input type="text" id="simStudentId" class="form-input" value="STU-2026-DEMO">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="simBeaconSelect">Target Beacon / Room</label>
+            <select id="simBeaconSelect" class="form-select">
+              <option value="8ec76ea3-6668-48da-9866-75be8bc86f4d">Room 101-1 (Cutoff: -75 dBm)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <div class="slider-container">
+              <div class="slider-header">
+                <span class="form-label">Signal Strength (RSSI)</span>
+                <span id="simRssiDisplay" style="font-weight: 700; color: #34D399;">-60 dBm (~1.1 m)</span>
+              </div>
+              <input type="range" id="simRssiSlider" min="-95" max="-45" value="-60" step="1">
+            </div>
+          </div>
+
+          <button id="btnDispatchCheckin" class="btn-simulate">Dispatch Check-In</button>
+
+          <div id="simFeedback" class="sim-feedback"></div>
+        </div>
+
+        <!-- Beacons Configuration -->
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">
+              <span>📡 Configured Beacons</span>
+            </div>
+          </div>
+          <div id="beaconsContainer">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = window.location.origin;
+
+    // Elements
+    const kpiTotal = document.getElementById('kpiTotal');
+    const kpiPresent = document.getElementById('kpiPresent');
+    const kpiPresentRate = document.getElementById('kpiPresentRate');
+    const kpiRejected = document.getElementById('kpiRejected');
+    const kpiBeacons = document.getElementById('kpiBeacons');
+    const kpiSessionState = document.getElementById('kpiSessionState');
+    const kpiSessionIcon = document.getElementById('kpiSessionIcon');
+    const kpiSessionSubtext = document.getElementById('kpiSessionSubtext');
+
+    const selectSessionRoom = document.getElementById('selectSessionRoom');
+    const btnStartSession = document.getElementById('btnStartSession');
+    const btnEndSession = document.getElementById('btnEndSession');
+    const badgeSessionStatus = document.getElementById('badgeSessionStatus');
+    const textSessionSummary = document.getElementById('textSessionSummary');
+
+    const tableBody = document.getElementById('tableAttendanceBody');
+    const simRssiSlider = document.getElementById('simRssiSlider');
+    const simRssiDisplay = document.getElementById('simRssiDisplay');
+    const btnDispatch = document.getElementById('btnDispatchCheckin');
+    const simFeedback = document.getElementById('simFeedback');
+    const filterInput = document.getElementById('inputFilterStudent');
+    const beaconsContainer = document.getElementById('beaconsContainer');
+    const simBeaconSelect = document.getElementById('simBeaconSelect');
+
+    let allRecords = [];
+    let currentActiveSession = null;
+
+    // Path loss calculator preview: d = 10 ^ ((A - RSSI) / (10 * n))
+    function calcDistance(rssi, A = -59, n = 2.7) {
+      return Math.pow(10, (A - rssi) / (10 * n));
+    }
+
+    // Update Slider Label
+    simRssiSlider.addEventListener('input', () => {
+      const val = parseInt(simRssiSlider.value);
+      const estD = calcDistance(val).toFixed(1);
+      const inRange = val >= -75;
+      simRssiDisplay.textContent = `${val} dBm (~${estD} m)`;
+      simRssiDisplay.style.color = inRange ? '#34D399' : '#FB7185';
+    });
+
+    // Check Active Session for Selected Room
+    async function loadActiveSession() {
+      const beaconUuid = selectSessionRoom.value;
+      if (!beaconUuid) return;
+
+      try {
+        const res = await fetch(`${API_BASE}/sessions/active?beaconUuid=${encodeURIComponent(beaconUuid)}`);
+        if (!res.ok) return;
+        const data = await res.json();
+
+        if (data.active && data.session) {
+          currentActiveSession = data.session;
+          badgeSessionStatus.className = 'session-status-badge active';
+          badgeSessionStatus.innerHTML = `● Session #${data.session.sessionId} Active`;
+          textSessionSummary.innerHTML = `Attendance live for <strong>${escapeHtml(data.session.roomName)}</strong> (Started ${escapeHtml(data.session.startedAt.slice(11, 19))}) • <strong>${data.session.attendeesCount}</strong> present`;
+
+          kpiSessionState.textContent = `#${data.session.sessionId} Live`;
+          kpiSessionState.style.color = '#34D399';
+          kpiSessionIcon.textContent = '🟢';
+          kpiSessionIcon.style.background = 'rgba(16, 185, 129, 0.15)';
+          kpiSessionIcon.style.color = '#34D399';
+          kpiSessionSubtext.textContent = `${data.session.roomName} • ${data.session.attendeesCount} present`;
+
+          btnStartSession.innerHTML = `
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+              <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+            Restart Session
+          `;
+          btnEndSession.disabled = false;
+        } else {
+          currentActiveSession = null;
+          badgeSessionStatus.className = 'session-status-badge closed';
+          badgeSessionStatus.innerHTML = `● Attendance Closed`;
+          textSessionSummary.textContent = `No active session for this room. Student check-ins are blocked (409).`;
+
+          kpiSessionState.textContent = 'Closed';
+          kpiSessionState.style.color = '#94A3B8';
+          kpiSessionIcon.textContent = '⚪';
+          kpiSessionIcon.style.background = 'rgba(148, 163, 184, 0.15)';
+          kpiSessionIcon.style.color = '#94A3B8';
+          kpiSessionSubtext.textContent = 'Check-ins blocked';
+
+          btnStartSession.innerHTML = `
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+              <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+            Start Session
+          `;
+          btnEndSession.disabled = true;
+        }
+      } catch (err) {
+        console.error('Failed to query active session:', err);
+      }
+    }
+
+    // Teacher Control: Start Session
+    btnStartSession.addEventListener('click', async () => {
+      const beaconUuid = selectSessionRoom.value;
+      if (!beaconUuid) return;
+
+      btnStartSession.disabled = true;
+      btnStartSession.textContent = 'Starting…';
+
+      try {
+        const res = await fetch(`${API_BASE}/sessions/start`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ beaconUuid })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          await loadActiveSession();
+          await loadDashboardData();
+        } else {
+          alert(`Error starting session: ${data.error || 'Server error'}`);
+        }
+      } catch (err) {
+        alert(`Network error starting session: ${err.message}`);
+      } finally {
+        btnStartSession.disabled = false;
+      }
+    });
+
+    // Teacher Control: End Session
+    btnEndSession.addEventListener('click', async () => {
+      if (!currentActiveSession) return;
+
+      btnEndSession.disabled = true;
+      btnEndSession.textContent = 'Ending…';
+
+      try {
+        const res = await fetch(`${API_BASE}/sessions/end`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ sessionId: currentActiveSession.sessionId })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          await loadActiveSession();
+          await loadDashboardData();
+        } else {
+          alert(`Error ending session: ${data.error || 'Server error'}`);
+        }
+      } catch (err) {
+        alert(`Network error ending session: ${err.message}`);
+      } finally {
+        btnEndSession.disabled = false;
+      }
+    });
+
+    selectSessionRoom.addEventListener('change', () => {
+      loadActiveSession();
+      if (simBeaconSelect) {
+        simBeaconSelect.value = selectSessionRoom.value;
+      }
+    });
+
+    // Fetch Stats & History
+    async function loadDashboardData() {
+      try {
+        const [statsRes, historyRes, beaconsRes] = await Promise.all([
+          fetch(`${API_BASE}/checkin/stats`),
+          fetch(`${API_BASE}/checkin/history`),
+          fetch(`${API_BASE}/checkin/beacons`)
+        ]);
+
+        if (statsRes.ok) {
+          const stats = await statsRes.json();
+          kpiTotal.textContent = stats.totalCheckins;
+          kpiPresent.textContent = stats.presentCount;
+          kpiRejected.textContent = stats.rejectedCount;
+          kpiBeacons.textContent = stats.beaconCount;
+          kpiPresentRate.textContent = `${stats.presentRate}% in-range rate`;
+        }
+
+        if (historyRes.ok) {
+          allRecords = await historyRes.json();
+          renderTable();
+        }
+
+        if (beaconsRes.ok) {
+          const beacons = await beaconsRes.json();
+          renderBeacons(beacons);
+          updateRoomSelectors(beacons);
+        }
+
+        await loadActiveSession();
+      } catch (err) {
+        console.error('Failed to refresh dashboard data:', err);
+      }
+    }
+
+    function updateRoomSelectors(beacons) {
+      if (!beacons || beacons.length === 0) return;
+      const currentVal = selectSessionRoom.value;
+      const optionsHtml = beacons.map(b => `<option value="${escapeHtml(b.beacon_uuid)}">${escapeHtml(b.room_name)}</option>`).join('');
+
+      if (selectSessionRoom.innerHTML !== optionsHtml) {
+        selectSessionRoom.innerHTML = optionsHtml;
+        if (currentVal && beacons.some(b => b.beacon_uuid === currentVal)) {
+          selectSessionRoom.value = currentVal;
+        }
+      }
+
+      if (simBeaconSelect) {
+        const simVal = simBeaconSelect.value;
+        const simOptions = beacons.map(b => `<option value="${escapeHtml(b.beacon_uuid)}">${escapeHtml(b.room_name)} (Cutoff: ${b.rssi_cutoff} dBm)</option>`).join('');
+        if (simBeaconSelect.innerHTML !== simOptions) {
+          simBeaconSelect.innerHTML = simOptions;
+          if (simVal && beacons.some(b => b.beacon_uuid === simVal)) {
+            simBeaconSelect.value = simVal;
+          }
+        }
+      }
+    }
+
+    function renderTable() {
+      const query = (filterInput.value || '').trim().toLowerCase();
+      const filtered = query
+        ? allRecords.filter(r => (r.student_id || r.enrollment_number || '').toLowerCase().includes(query))
+        : allRecords;
+
+      if (filtered.length === 0) {
+        tableBody.innerHTML = `
+          <tr>
+            <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 32px;">
+              ${query ? 'No matching check-ins for student filter.' : 'No check-in records logged yet.'}
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tableBody.innerHTML = filtered.map(row => {
+        const isPresent = row.status === 'present';
+        const dist = row.estimated_distance_m ? `${row.estimated_distance_m.toFixed(1)} m` : '—';
+        const rssi = row.rssi;
+        let signalClass = 'signal-weak';
+        if (rssi >= -65) signalClass = 'signal-strong';
+        else if (rssi >= -75) signalClass = 'signal-medium';
+
+        const time = new Date(row.server_timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        const studentLabel = row.enrollment_number || row.student_id;
+        const sessionBadge = row.session_id ? `<span class="session-tag">#${row.session_id}</span>` : `<span style="color:var(--text-muted)">—</span>`;
+
+        return `
+          <tr>
+            <td><span class="student-badge">${escapeHtml(studentLabel)}</span></td>
+            <td>${escapeHtml(row.room_name || 'Room 101-1')}</td>
+            <td>${sessionBadge}</td>
+            <td>
+              <span class="signal-indicator-bar ${signalClass}">
+                <span></span><span></span><span></span><span></span>
+              </span>
+              <strong>${row.rssi} dBm</strong>
+            </td>
+            <td>${dist}</td>
+            <td>
+              <span class="status-pill ${isPresent ? 'present' : 'rejected'}">
+                ● ${isPresent ? 'PRESENT' : 'REJECTED'}
+              </span>
+            </td>
+            <td style="color: var(--text-muted); font-size: 12px;">${time}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function renderBeacons(beacons) {
+      if (!beacons || beacons.length === 0) return;
+      beaconsContainer.innerHTML = beacons.map(b => `
+        <div class="beacon-item">
+          <div class="beacon-info">
+            <h4>${escapeHtml(b.room_name)}</h4>
+            <p>${escapeHtml(b.beacon_uuid.slice(0, 18))}…</p>
+          </div>
+          <div class="beacon-params">
+            <div>A: <strong>${b.reference_rssi_a} dBm</strong> • n: <strong>${b.path_loss_exponent_n}</strong></div>
+            <div>Cutoff: <strong>${b.rssi_cutoff} dBm</strong></div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    // Filter event
+    filterInput.addEventListener('input', renderTable);
+
+    // Refresh Button
+    document.getElementById('btnManualRefresh').addEventListener('click', loadDashboardData);
+
+    // Stable per-browser device id for the simulator (same role ANDROID_ID plays in the app)
+    function getBrowserDeviceId() {
+      try {
+        let id = localStorage.getItem('pacbas_device_id');
+        if (!id) {
+          id = 'web-' + (crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2));
+          localStorage.setItem('pacbas_device_id', id);
+        }
+        return id;
+      } catch (e) { return 'web-unknown'; }
+    }
+
+    // Dispatch Simulator Check-in
+    btnDispatch.addEventListener('click', async () => {
+      const studentId = document.getElementById('simStudentId').value.trim();
+      const beaconUuid = document.getElementById('simBeaconSelect').value;
+      const rssi = parseInt(simRssiSlider.value);
+
+      if (!studentId) {
+        alert('Please enter a Student ID to test.');
+        return;
+      }
+
+      btnDispatch.disabled = true;
+      btnDispatch.textContent = 'Verifying with Server…';
+
+      try {
+        const res = await fetch(`${API_BASE}/checkin`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            studentId,
+            enrollmentNumber: studentId,
+            deviceId: getBrowserDeviceId(),
+            beaconUuid,
+            rssi,
+            clientTimestamp: new Date().toISOString()
+          })
+        });
+
+        const data = await res.json();
+
+        if (res.status === 201) {
+          simFeedback.className = 'sim-feedback success';
+          simFeedback.innerHTML = `✅ <strong>Present in ${escapeHtml(data.roomName)}</strong> (Session #${data.sessionId})<br>Started: ${data.sessionStartedAt ? escapeHtml(data.sessionStartedAt.slice(11, 19)) : '—'} | Distance: ${data.estimatedDistanceMeters}m | RSSI: ${data.rssi} dBm`;
+        } else if (res.status === 409) {
+          simFeedback.className = 'sim-feedback conflict';
+          simFeedback.innerHTML = `⛔ <strong>Check-In Blocked (409)</strong><br>${escapeHtml(data.error)}`;
+        } else if (res.status === 403) {
+          simFeedback.className = 'sim-feedback rejected';
+          simFeedback.innerHTML = `📍 <strong>Rejected (Out of Range)</strong><br>${escapeHtml(data.error)}<br>Cutoff: ${data.cutoffDbm} dBm | Distance: ${data.estimatedDistanceMeters}m`;
+        } else {
+          simFeedback.className = 'sim-feedback rejected';
+          simFeedback.innerHTML = `⚠️ <strong>Error (${res.status})</strong>: ${escapeHtml(data.error || 'Server rejected check-in')}`;
+        }
+
+        // Refresh table & stats
+        await loadDashboardData();
+      } catch (err) {
+        simFeedback.className = 'sim-feedback rejected';
+        simFeedback.textContent = `Error: ${err.message}`;
+      } finally {
+        btnDispatch.disabled = false;
+        btnDispatch.textContent = 'Dispatch Check-In';
+      }
+    });
+
+    // Auto-refresh every 5 seconds
+    setInterval(loadDashboardData, 5000);
+    loadDashboardData();
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Brand / Primary Palette (Modern Indigo) -->
+    <color name="pacbas_primary">#4F46E5</color>
+    <color name="pacbas_primary_variant">#4338CA</color>
+    <color name="pacbas_primary_dark">#312E81</color>
+    <color name="pacbas_primary_container">#EEF2FF</color>
+    <color name="pacbas_on_primary_container">#3730A3</color>
+
+    <!-- Accent / Secondary -->
+    <color name="pacbas_accent">#06B6D4</color>
+    <color name="pacbas_accent_dark">#0891B2</color>
+
+    <!-- Surfaces & Neutrals (Modern Slate) -->
+    <color name="pacbas_background">#F8FAFC</color>
+    <color name="pacbas_surface">#FFFFFF</color>
+    <color name="pacbas_surface_variant">#F1F5F9</color>
+    <color name="pacbas_card_stroke">#E2E8F0</color>
+
+    <!-- Typography -->
+    <color name="pacbas_text_primary">#0F172A</color>
+    <color name="pacbas_text_secondary">#64748B</color>
+    <color name="pacbas_text_muted">#94A3B8</color>
+    <color name="pacbas_white">#FFFFFF</color>
+
+    <!-- Proximity Status (In-Range / Emerald) -->
+    <color name="pacbas_in_range">#10B981</color>
+    <color name="pacbas_in_range_bg">#ECFDF5</color>
+    <color name="pacbas_in_range_stroke">#A7F3D0</color>
+    <color name="pacbas_in_range_text">#065F46</color>
+
+    <!-- Proximity Status (Out-of-Range / Rose) -->
+    <color name="pacbas_out_range">#EF4444</color>
+    <color name="pacbas_out_range_bg">#FEF2F2</color>
+    <color name="pacbas_out_range_stroke">#FECACA</color>
+    <color name="pacbas_out_range_text">#991B1B</color>
+
+    <!-- Signal Quality Indicators -->
+    <color name="signal_strong">#10B981</color>
+    <color name="signal_medium">#F59E0B</color>
+    <color name="signal_weak">#EF4444</color>
+    <color name="signal_inactive">#CBD5E1</color>
+</resources>
