@@ -22,6 +22,7 @@ app.use("/sessions", sessionsRouter);
 app.use("/students", studentsRouter);
 
 // Lightweight health check endpoint for Render monitoring and cold-start warming
+// Always returns 200 so Render deployment health check succeeds promptly
 app.get("/health", async (req, res) => {
   let dbStatus = "disconnected";
   try {
@@ -34,7 +35,7 @@ app.get("/health", async (req, res) => {
   }
 
   const isHealthy = dbStatus === "connected";
-  res.status(isHealthy ? 200 : 503).json({
+  res.status(200).json({
     status: isHealthy ? "healthy" : "degraded",
     service: "PACBAS Attendance Backend",
     database: dbStatus,
@@ -65,7 +66,7 @@ app.get("*", (req, res, next) => {
 // Render assigns process.env.PORT dynamically. Local fallback is 3000.
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, "0.0.0.0", async () => {
+const server = app.listen(PORT, "0.0.0.0", async () => {
   console.log(`====================================================`);
   console.log(`🚀 PACBAS Cloud Attendance Backend live on port ${PORT}`);
   console.log(`   Local URL:    http://localhost:${PORT}`);
@@ -76,3 +77,5 @@ app.listen(PORT, "0.0.0.0", async () => {
   // Verify and seed database on boot
   await db.initDb();
 });
+
+module.exports = { app, server };

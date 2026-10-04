@@ -6,8 +6,37 @@ require("dotenv").config();
 const { Pool } = require("pg");
 const { createClient } = require("@supabase/supabase-js");
 
-const connectionString = process.env.DATABASE_URL || process.env.SUPABASE_DB_URL;
-const supabaseUrl = process.env.SUPABASE_URL;
+/**
+ * Safely encodes special characters (e.g. '?', '+', '#') in the password portion
+ * of a Postgres connection URI to prevent premature URL query parsing.
+ */
+function sanitizePostgresUrl(rawUrl) {
+  if (!rawUrl || typeof rawUrl !== "string") return rawUrl;
+  const match = rawUrl.match(/^(postgres(?:ql)?:\/\/)([^:]+):(.*)@([^:/]+)(?::(\d+))?\/([^?]+)(\?.*)?$/);
+  if (!match) return rawUrl;
+  const [, protocol, user, pass, host, port, dbname, query] = match;
+  try {
+    const decodedPass = decodeURIComponent(pass);
+    const encodedPass = encodeURIComponent(decodedPass);
+    const portStr = port ? `:${port}` : "";
+    const queryStr = query || "";
+    return `${protocol}${user}:${encodedPass}@${host}${portStr}/${dbname}${queryStr}`;
+  } catch {
+    return rawUrl;
+  }
+}
+
+const rawConnStr = process.env.DATABASE_URL || process.env.SUPABASE_DB_URL;
+const connectionString = sanitizePostgresUrl(rawConnStr);
+
+let rawSupabaseUrl = process.env.SUPABASE_URL || "";
+if (rawSupabaseUrl.endsWith("/rest/v1") || rawSupabaseUrl.endsWith("/rest/v1/")) {
+  rawSupabaseUrl = rawSupabaseUrl.replace(/\/rest\/v1\/?$/, "");
+}
+if (rawSupabaseUrl.endsWith("/")) {
+  rawSupabaseUrl = rawSupabaseUrl.slice(0, -1);
+}
+const supabaseUrl = rawSupabaseUrl;
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_KEY || process.env.SUPABASE_ANON_KEY;
 
 // Initialize Supabase JS client wrapper if URL and key are provided
